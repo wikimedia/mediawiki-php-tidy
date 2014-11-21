@@ -219,10 +219,12 @@ static int _php_tidy_set_tidy_opt(TidyDoc, char *, zval * TSRMLS_DC);
 static int _php_tidy_apply_config_array(TidyDoc doc, HashTable *ht_options TSRMLS_DC);
 static void _php_tidy_register_nodetypes(INIT_FUNC_ARGS);
 static void _php_tidy_register_tags(INIT_FUNC_ARGS);
+#ifndef HHVM
 static PHP_INI_MH(php_tidy_set_clean_output);
 static void php_tidy_clean_output_start(const char *name, size_t name_len TSRMLS_DC);
 static php_output_handler *php_tidy_output_handler_init(const char *handler_name, size_t handler_name_len, size_t chunk_size, int flags TSRMLS_DC);
 static int php_tidy_output_handler(void **nothing, php_output_context *output_context);
+#endif
 
 static PHP_MINIT_FUNCTION(tidy);
 static PHP_MSHUTDOWN_FUNCTION(tidy);
@@ -277,7 +279,9 @@ ZEND_DECLARE_MODULE_GLOBALS(tidy)
 
 PHP_INI_BEGIN()
 STD_PHP_INI_ENTRY("tidy.default_config",	"",		PHP_INI_SYSTEM,		OnUpdateString,				default_config,		zend_tidy_globals,	tidy_globals)
+#ifndef HHVM
 STD_PHP_INI_ENTRY("tidy.clean_output",		"0",	PHP_INI_USER,		php_tidy_set_clean_output,	clean_output,		zend_tidy_globals,	tidy_globals)
+#endif
 PHP_INI_END()
 
 /* {{{ arginfo */
@@ -1080,14 +1084,18 @@ static PHP_MINIT_FUNCTION(tidy)
 	_php_tidy_register_tags(INIT_FUNC_ARGS_PASSTHRU);
 	_php_tidy_register_nodetypes(INIT_FUNC_ARGS_PASSTHRU);
 
+#ifndef HHVM
 	php_output_handler_alias_register(ZEND_STRL("ob_tidyhandler"), php_tidy_output_handler_init TSRMLS_CC);
+#endif
 
 	return SUCCESS;
 }
 
 static PHP_RINIT_FUNCTION(tidy)
 {
+#ifndef HHVM
 	php_tidy_clean_output_start(ZEND_STRL("ob_tidyhandler") TSRMLS_CC);
+#endif
 
 	return SUCCESS;
 }
@@ -1108,6 +1116,8 @@ static PHP_MINFO_FUNCTION(tidy)
 
 	DISPLAY_INI_ENTRIES();
 }
+
+#ifndef HHVM
 
 static PHP_INI_MH(php_tidy_set_clean_output)
 {
@@ -1210,6 +1220,8 @@ static int php_tidy_output_handler(void **nothing, php_output_context *output_co
 
 	return status;
 }
+
+#endif // HHVM
 
 /* {{{ proto bool tidy_parse_string(string input [, mixed config_options [, string encoding]])
    Parse a document stored in a string */
