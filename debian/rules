@@ -1,0 +1,35 @@
+#!/usr/bin/make -f
+
+%:
+	dh $@
+
+override_dh_auto_configure:
+	mkdir -p debian/build-hhvm
+	tar -cf - --exclude=debian/build-hhvm --exclude=.pc . \
+		| tar -xf - -C debian/build-hhvm
+	cd debian/build-hhvm && /usr/bin/hphpize
+	# workaround "cmake .." bug in HHVM's CMake extension code
+	cd debian/build-hhvm && cmake . \
+		-DCMAKE_INSTALL_PREFIX=/usr \
+		-DCMAKE_VERBOSE_MAKEFILE=ON \
+		-DCMAKE_BUILD_TYPE=None
+	cd debian/build-hhvm && dh_auto_configure
+
+override_dh_auto_build:
+	cd debian/build-hhvm && dh_auto_build
+
+override_dh_auto_test:
+
+override_dh_auto_install:
+	DESTDIR=$(CURDIR)/debian/hhvm-tidy make -C debian/build-hhvm install
+
+override_dh_gencontrol:
+	# HHVM does *not* ensure abi compatibility.
+	echo "hhvm:ApiVersion=hhvm-api-$(shell /usr/bin/hhvm --version | sed -ne 's/^Extension API:\ //p')" >> debian/hhvm-tidy.substvars
+	dh_gencontrol
+
+override_dh_auto_clean:
+	-rm -r debian/build-hhvm
+	dh_auto_clean
+
+.PHONY: override_dh_auto_configure override_dh_auto_build override_dh_auto_test override_dh_auto_install override_dh_gencontrol

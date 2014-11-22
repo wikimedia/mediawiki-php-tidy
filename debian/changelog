@@ -1,0 +1,5 @@
+hhvm-tidy (0.1-1) trusty-wikimedia; urgency=medium
+
+  * Initial release.
+
+ -- Ori Livneh <ori@wikimedia.org>  Sat, 22 Nov 2014 03:38:29 +0000
