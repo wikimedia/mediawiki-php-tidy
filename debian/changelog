@@ -1,0 +1,11 @@
+hhvm-tidy (0.1-2) trusty-wikimedia; urgency=medium
+
+  * Rewrite as bare-bones HNI extension providing only tidy_repair_string().
+
+ -- Ori Livneh <ori@wikimedia.org>  Sat, 06 Dec 2014 04:58:32 +0000
+
+hhvm-tidy (0.1-1) trusty-wikimedia; urgency=medium
+
+  * Initial release.
+
+ -- Ori Livneh <ori@wikimedia.org>  Sat, 22 Nov 2014 03:38:29 +0000

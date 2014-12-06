@@ -1,0 +1,13 @@
+Source: hhvm-tidy
+Section: web
+Priority: optional
+Maintainer: Ori Livneh <ori@wikimedia.org>
+Build-Depends: debhelper (>= 9), hhvm-dev, cmake, libtidy-dev
+Standards-Version: 3.9.5
+
+Package: hhvm-tidy
+Architecture: any
+Depends: ${hhvm:ApiVersion}, libtidy-0.99-0
+Description: tidy module for HHVM
+ This is a HHVM extension based on Libtidy (http://tidy.sf.net). It allows
+ a PHP developer to clean, repair, and traverse HTML, XHTML and XML documents.
