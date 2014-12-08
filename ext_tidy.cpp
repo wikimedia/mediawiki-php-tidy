@@ -24,16 +24,16 @@ static String HHVM_FUNCTION(tidy_repair_string, const String& data,
                                                 const Variant& config,
                                                 const Variant& encoding) {
     TidyDoc doc = tidyCreate();
+    SCOPE_EXIT { tidyRelease(doc); };
     tidyOptSetBool(doc, TidyForceOutput, yes);
     tidyOptSetBool(doc, TidyMark, no);
     String ret;
 
     TidyBuffer errbuf;
     tidyBufInit(&errbuf);
+    SCOPE_EXIT { tidyBufFree(&errbuf); };
 
     if (tidySetErrorBuffer(doc, &errbuf) != 0) {
-        tidyBufFree(&errbuf);
-        tidyRelease(doc);
         raise_error("Could not set Tidy error buffer");
     }
 
@@ -57,6 +57,7 @@ static String HHVM_FUNCTION(tidy_repair_string, const String& data,
         TidyBuffer buf;
         tidyBufInit(&buf);
         tidyBufAttach(&buf, (byte *)data.data(), data.length());
+        SCOPE_EXIT { tidyBufDetach(&buf); tidyBufFree(&buf); };
 
         if (tidyParseBuffer(doc, &buf) < 0) {
             raise_warning("%s", errbuf.bp);
@@ -64,15 +65,13 @@ static String HHVM_FUNCTION(tidy_repair_string, const String& data,
             if (tidyCleanAndRepair(doc) >= 0) {
                 TidyBuffer output;
                 tidyBufInit(&output);
+                SCOPE_EXIT { tidyBufFree(&output); };
                 tidySaveBuffer(doc, &output);
                 ret = String(reinterpret_cast<char*>(output.bp), CopyString);
-                tidyBufFree(&output);
             }
         }
-        tidyBufFree(&errbuf);
     }
 
-    tidyRelease(doc);
     return ret;
 }
 
