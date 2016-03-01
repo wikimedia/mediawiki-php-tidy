@@ -14,7 +14,9 @@
    | license@php.net so we can mail you a copy immediately.               |
    +----------------------------------------------------------------------+
 */
-#include "hphp/runtime/base/base-includes.h"
+#include "hphp/util/lock.h"
+#include "hphp/runtime/ext/extension.h"
+#include "hphp/util/compatibility.h"
 #include <tidy.h>
 #include <buffio.h>
 
@@ -81,9 +83,9 @@ static class TidyExtension : public Extension {
   virtual void moduleInit() {
     HHVM_FE(tidy_repair_string);
     loadSystemlib();
-    tidySetMallocCall(smart_malloc);
-    tidySetReallocCall(smart_realloc);
-    tidySetFreeCall(smart_free);
+    tidySetMallocCall(req::malloc);
+    tidySetReallocCall(req::realloc);
+    tidySetFreeCall(req::free);
   }
 } s_tidy_extension;
 

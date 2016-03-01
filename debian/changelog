@@ -1,3 +1,13 @@
+hhvm-tidy (0.1.3) trusty-wikimedia; urgency=medium
+
+  * Updating debian/rules for HHVM 3.12
+  * Change includes given base-includes.h has been removed
+  * Renamed smart_malloc to req::malloc and so on following upstream transition
+  * Update debian/control with new build deps
+  * Changed versioning to debian native
+
+ -- Giuseppe Lavagetto <glavagetto@wikimedia.org>  Tue, 01 Mar 2016 18:30:21 +0100
+
 hhvm-tidy (0.1-2) trusty-wikimedia; urgency=medium
 
   * Rewrite as bare-bones HNI extension providing only tidy_repair_string().
