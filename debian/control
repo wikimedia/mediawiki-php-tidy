@@ -2,8 +2,8 @@ Source: hhvm-tidy
 Section: web
 Priority: optional
 Maintainer: Ori Livneh <ori@wikimedia.org>
-Build-Depends: debhelper (>= 9), hhvm-dev, cmake, libtidy-dev, libtbb-dev,
-               libboost1.54-dev, libgoogle-glog-dev, libdouble-conversion-dev,
+Build-Depends: debhelper (>= 9), hhvm, hhvm-dev, cmake, libtidy-dev, libtbb-dev,
+               libboost-dev, libgoogle-glog-dev, libdouble-conversion-dev,
                libjemalloc-dev
 Standards-Version: 3.9.5
 
